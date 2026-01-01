@@ -106,7 +106,7 @@ public abstract partial class LocalizationsGeneratorForStaticPreview
 
     Console.WriteLine(" */");
     Console.WriteLine("");
-    Console.WriteLine($"/** @var {{ { mustGenerateJSDocForTypeWithName } }} */");
+    Console.WriteLine($"/** @type {{ { mustGenerateJSDocForTypeWithName } }} */");
     Console.WriteLine(
       $"const $componentStringResources = [VARIABLE_NAME].[LOCALE].{ outputObjectDotSeparatedPathCommonPart };"
     );
