@@ -22,7 +22,7 @@ npm i @yamato-daiwa/pug-csharp-static-preview -D -E
 ### nuget package
 
 ```shell
-npm i dotnet add package YamatoDaiwa.PugCSharpStaticPreview --version 0.1.0
+npm i dotnet add package YamatoDaiwa.PugCSharpStaticPreview --version 0.3.1
 ```
 
 

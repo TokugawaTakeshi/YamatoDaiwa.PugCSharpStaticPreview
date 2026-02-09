@@ -74,7 +74,7 @@ class Generator {
     const configurationFileRelativePath: unknown = process.argv[2];
 
     if (!isNonEmptyString(configurationFileRelativePath)) {
-      Logger.throwErrorAndLog({
+      Logger.throwErrorWithFormattedMessage({
         errorInstance: new InvalidConsoleCommandError({
           customMessage:
               `The command "${ Generator.CONSOLE_COMMAND_PHRASE }" must be invoked with single parameter, the relative ` +
@@ -91,6 +91,8 @@ class Generator {
           validDataSpecification: {
             nameForLogging: "AA1 Application Configuration",
             subtype: RawObjectDataProcessor.ObjectSubtypes.indexedArray,
+            areUndefinedElementsForbidden: true,
+            areNullElementsForbidden: true,
             element: {
               type: Object,
               properties: {
@@ -98,31 +100,36 @@ class Generator {
                 sourceDirectoriesRelativePaths: {
 
                   type: Object,
-                  required: true,
+                  isUndefinedForbidden: true,
+                  isNullForbidden: true,
 
                   properties: {
 
                     base: {
                       type: String,
-                      required: false,
+                      isUndefinedForbidden: false,
+                      isNullForbidden: true,
                       minimalCharactersCount: 1
                     },
 
                     commonStringResources: {
                       type: String,
-                      required: true,
+                      isUndefinedForbidden: true,
+                      isNullForbidden: true,
                       minimalCharactersCount: 1
                     },
 
                     pages: {
                       type: String,
-                      required: true,
+                      isUndefinedForbidden: true,
+                      isNullForbidden: true,
                       minimalCharactersCount: 1
                     },
 
                     sharedComponents: {
                       type: String,
-                      required: true,
+                      isUndefinedForbidden: true,
+                      isNullForbidden: true,
                       minimalCharactersCount: 1
                     }
 
@@ -133,31 +140,36 @@ class Generator {
                 outputDirectoriesRelativePaths: {
 
                   type: Object,
-                  required: true,
+                  isUndefinedForbidden: true,
+                  isNullForbidden: true,
 
                   properties: {
 
                     base: {
                       type: String,
-                      required: true,
+                      isUndefinedForbidden: true,
+                      isNullForbidden: true,
                       minimalCharactersCount: 1
                     },
 
                     commonStringResources: {
                       type: String,
-                      required: true,
+                      isUndefinedForbidden: true,
+                      isNullForbidden: true,
                       minimalCharactersCount: 1
                     },
 
                     pages: {
                       type: String,
-                      required: true,
+                      isUndefinedForbidden: true,
+                      isNullForbidden: true,
                       minimalCharactersCount: 1
                     },
 
                     sharedComponents: {
                       type: String,
-                      required: true,
+                      isUndefinedForbidden: true,
+                      isNullForbidden: true,
                       minimalCharactersCount: 1
                     }
 
@@ -167,7 +179,10 @@ class Generator {
 
                 targetLocales: {
                   type: Array,
-                  required: true,
+                  isUndefinedForbidden: true,
+                  isNullForbidden: true,
+                  areUndefinedElementsForbidden: true,
+                  areNullElementsForbidden: true,
                   element: {
                     type: String,
                     minimalCharactersCount: 2
@@ -176,7 +191,8 @@ class Generator {
 
                 outputFileCSharpNamespaceCommonPart: {
                   type: String,
-                  required: true,
+                  isUndefinedForbidden: true,
+                  isNullForbidden: true,
                   minimalCharactersCount: 2
                 }
 
@@ -278,7 +294,7 @@ class Generator {
   private prepareFilesForCommonStringResources(): this {
 
     const commonStringsResourcesFilesAbsolutePaths: ReadonlyArray<string> = ImprovedGlob.getFilesAbsolutePathsSynchronously([
-      buildAllFilesInCurrentDirectoryAndBelowGlobSelector({
+      ImprovedGlob.buildAllFilesInCurrentDirectoryAndBelowGlobSelector({
         basicDirectoryPath: this.sourceDirectories.commonStringResources.absolutePath,
         fileNamesExtensions: [ "cs" ]
       })
@@ -303,7 +319,7 @@ class Generator {
     }
 
     if (isUndefined(commonStringsResourcesSchemaFileAbsolutePath)) {
-      Logger.throwErrorAndLog({
+      Logger.throwErrorWithFormattedMessage({
         errorInstance: new FileNotFoundError({ customMessage: "Common string resources schema file not found." }),
         title: FileNotFoundError.localization.defaultTitle,
         occurrenceLocation: "generator.prepareFilesForCommonStringResources()"
@@ -422,7 +438,7 @@ class Generator {
   ): void {
 
     const targetFilesAbsolutePaths: ReadonlyArray<string> = ImprovedGlob.getFilesAbsolutePathsSynchronously([
-      buildAllFilesInCurrentDirectoryAndBelowGlobSelector({
+      ImprovedGlob.buildAllFilesInCurrentDirectoryAndBelowGlobSelector({
         basicDirectoryPath: targetFilesCommonSourceDirectoryAbsolutePath,
         fileNamePostfixes: [ "Localization" ],
         fileNamesExtensions: [ "cs" ]
@@ -475,7 +491,7 @@ class Generator {
         }
 
         if (isUndefined(schemaSourceFileRelativePath)) {
-          Logger.throwErrorAndLog({
+          Logger.throwErrorWithFormattedMessage({
             errorInstance: new FileNotFoundError({
               customMessage:
                   "Schema file not found in directory " +
@@ -508,7 +524,7 @@ class Generator {
         );
 
         if (isUndefined(this.commonStringResourcesNamespaces)) {
-          Logger.throwErrorAndLog({
+          Logger.throwErrorWithFormattedMessage({
             errorInstance: new UnexpectedEventError(
               PoliteErrorsMessagesBuilder.buildMessage({
                 politeExplanation:
@@ -702,37 +718,4 @@ function removePathSegments(targetPath: string, targetPathSegments: ReadonlyArra
     predicate: (element: string): boolean => targetPathSegments.includes(element),
     mutably: true
   }).updatedArray.join("/");
-}
-
-
-/** Upgrade of ImprovedGlob.buildAllFilesInCurrentDirectoryAndBelowGlobSelector */
-function buildAllFilesInCurrentDirectoryAndBelowGlobSelector(
-  {
-    basicDirectoryPath,
-    fileNamePostfixes,
-    fileNamesExtensions
-  }: Readonly<{
-    basicDirectoryPath: string;
-    fileNamePostfixes?: ReadonlyArray<string>;
-    fileNamesExtensions?: ReadonlyArray<string>;
-  }>
-): string {
-  return [
-    appendCharacterIfItDoesNotPresentInLastPosition({
-      targetString: replaceDoubleBackslashesWithForwardSlashes(basicDirectoryPath),
-      trailingCharacter: "/"
-    }),
-    "**/*",
-    ...isNonEmptyArray(fileNamePostfixes) ?
-        [ `@(${ fileNamePostfixes.join("|").replace(/\./gu, "") })` ] : [],
-    ...isNonEmptyArray(fileNamesExtensions) ?
-        [ ImprovedGlob.createMultipleFilenameExtensionsGlobPostfix(fileNamesExtensions) ] : []
-  ].join("");
-}
-
-function appendCharacterIfItDoesNotPresentInLastPosition(
-  compoundParameter: Readonly<{ targetString: string; trailingCharacter: string; }>
-): string {
-  const { targetString, trailingCharacter }: Readonly<{ targetString: string; trailingCharacter: string; }> = compoundParameter;
-  return targetString.endsWith(trailingCharacter) ? targetString : `${ targetString }${ trailingCharacter }`;
 }
