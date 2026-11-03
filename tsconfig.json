@@ -3,12 +3,14 @@
   "compilerOptions": {
 
     "target": "ESNext",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
 
-    "strictNullChecks": true
+    "types": [ "node" ],
+
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true
 
   },
 

@@ -28,7 +28,7 @@ class Generator {
         es_extensions_1.Logger.setImplementation(es_extensions_nodejs_1.ConsoleApplicationLogger);
         const configurationFileRelativePath = process.argv[2];
         if (!(0, es_extensions_1.isNonEmptyString)(configurationFileRelativePath)) {
-            es_extensions_1.Logger.throwErrorAndLog({
+            es_extensions_1.Logger.throwErrorWithFormattedMessage({
                 errorInstance: new es_extensions_nodejs_1.InvalidConsoleCommandError({
                     customMessage: `The command "${Generator.CONSOLE_COMMAND_PHRASE}" must be invoked with single parameter, the relative ` +
                         "path to configuration file of YAML format."
@@ -43,64 +43,79 @@ class Generator {
             validDataSpecification: {
                 nameForLogging: "AA1 Application Configuration",
                 subtype: es_extensions_1.RawObjectDataProcessor.ObjectSubtypes.indexedArray,
+                areUndefinedElementsForbidden: true,
+                areNullElementsForbidden: true,
                 element: {
                     type: Object,
                     properties: {
                         sourceDirectoriesRelativePaths: {
                             type: Object,
-                            required: true,
+                            isUndefinedForbidden: true,
+                            isNullForbidden: true,
                             properties: {
                                 base: {
                                     type: String,
-                                    required: false,
+                                    isUndefinedForbidden: false,
+                                    isNullForbidden: true,
                                     minimalCharactersCount: 1
                                 },
                                 commonStringResources: {
                                     type: String,
-                                    required: true,
+                                    isUndefinedForbidden: true,
+                                    isNullForbidden: true,
                                     minimalCharactersCount: 1
                                 },
                                 pages: {
                                     type: String,
-                                    required: true,
+                                    isUndefinedForbidden: true,
+                                    isNullForbidden: true,
                                     minimalCharactersCount: 1
                                 },
                                 sharedComponents: {
                                     type: String,
-                                    required: true,
+                                    isUndefinedForbidden: true,
+                                    isNullForbidden: true,
                                     minimalCharactersCount: 1
                                 }
                             }
                         },
                         outputDirectoriesRelativePaths: {
                             type: Object,
-                            required: true,
+                            isUndefinedForbidden: true,
+                            isNullForbidden: true,
                             properties: {
                                 base: {
                                     type: String,
-                                    required: true,
+                                    isUndefinedForbidden: true,
+                                    isNullForbidden: true,
                                     minimalCharactersCount: 1
                                 },
                                 commonStringResources: {
                                     type: String,
-                                    required: true,
+                                    isUndefinedForbidden: true,
+                                    isNullForbidden: true,
                                     minimalCharactersCount: 1
                                 },
                                 pages: {
                                     type: String,
-                                    required: true,
+                                    isUndefinedForbidden: true,
+                                    isNullForbidden: true,
                                     minimalCharactersCount: 1
                                 },
                                 sharedComponents: {
                                     type: String,
-                                    required: true,
+                                    isUndefinedForbidden: true,
+                                    isNullForbidden: true,
                                     minimalCharactersCount: 1
                                 }
                             }
                         },
                         targetLocales: {
                             type: Array,
-                            required: true,
+                            isUndefinedForbidden: true,
+                            isNullForbidden: true,
+                            areUndefinedElementsForbidden: true,
+                            areNullElementsForbidden: true,
                             element: {
                                 type: String,
                                 minimalCharactersCount: 2
@@ -108,7 +123,8 @@ class Generator {
                         },
                         outputFileCSharpNamespaceCommonPart: {
                             type: String,
-                            required: true,
+                            isUndefinedForbidden: true,
+                            isNullForbidden: true,
                             minimalCharactersCount: 2
                         }
                     }
@@ -171,7 +187,7 @@ class Generator {
     /* ━━━ Processing ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     prepareFilesForCommonStringResources() {
         const commonStringsResourcesFilesAbsolutePaths = es_extensions_nodejs_1.ImprovedGlob.getFilesAbsolutePathsSynchronously([
-            buildAllFilesInCurrentDirectoryAndBelowGlobSelector({
+            es_extensions_nodejs_1.ImprovedGlob.buildAllFilesInCurrentDirectoryAndBelowGlobSelector({
                 basicDirectoryPath: this.sourceDirectories.commonStringResources.absolutePath,
                 fileNamesExtensions: ["cs"]
             })
@@ -191,7 +207,7 @@ class Generator {
             }
         }
         if ((0, es_extensions_1.isUndefined)(commonStringsResourcesSchemaFileAbsolutePath)) {
-            es_extensions_1.Logger.throwErrorAndLog({
+            es_extensions_1.Logger.throwErrorWithFormattedMessage({
                 errorInstance: new es_extensions_nodejs_1.FileNotFoundError({ customMessage: "Common string resources schema file not found." }),
                 title: es_extensions_nodejs_1.FileNotFoundError.localization.defaultTitle,
                 occurrenceLocation: "generator.prepareFilesForCommonStringResources()"
@@ -260,9 +276,9 @@ class Generator {
     }
     prepareFilesForPagesOrSharedComponentsStringResources({ targetFilesCommonSourceDirectoryAbsolutePath, targetFilesCommonOutputDirectory }) {
         const targetFilesAbsolutePaths = es_extensions_nodejs_1.ImprovedGlob.getFilesAbsolutePathsSynchronously([
-            buildAllFilesInCurrentDirectoryAndBelowGlobSelector({
+            es_extensions_nodejs_1.ImprovedGlob.buildAllFilesInCurrentDirectoryAndBelowGlobSelector({
                 basicDirectoryPath: targetFilesCommonSourceDirectoryAbsolutePath,
-                fileNamePostfixes: ["Localization"],
+                fileNamesPostfixes: ["Localization"],
                 fileNamesExtensions: ["cs"]
             })
         ]);
@@ -297,7 +313,7 @@ class Generator {
                     }
                 }
                 if ((0, es_extensions_1.isUndefined)(schemaSourceFileRelativePath)) {
-                    es_extensions_1.Logger.throwErrorAndLog({
+                    es_extensions_1.Logger.throwErrorWithFormattedMessage({
                         errorInstance: new es_extensions_nodejs_1.FileNotFoundError({
                             customMessage: "Schema file not found in directory " +
                                 `"${commonForCurrentlyIteratedFilesSourceDirectoryRelativePath}".`
@@ -314,7 +330,7 @@ class Generator {
                 const originalCSharpNamespace = (0, es_extensions_1.getMatchingWithFirstRegularExpressionCapturingGroup)(sourceSchemaFileContent, Generator.REGULAR_EXPRESSION_FOR_EXTRACTING_OF_CSHARP_NAMESPACE_DECLARATION, { mustExpectExactlyOneMatching: true });
                 const schemaFileOutputPathRelativeToBaseOne = removePathSegments(path_1.default.relative(targetFilesCommonSourceDirectoryAbsolutePath, schemaFileSourceAbsolutePath), ["Localizations"]);
                 if ((0, es_extensions_1.isUndefined)(this.commonStringResourcesNamespaces)) {
-                    es_extensions_1.Logger.throwErrorAndLog({
+                    es_extensions_1.Logger.throwErrorWithFormattedMessage({
                         errorInstance: new es_extensions_1.UnexpectedEventError(es_extensions_1.PoliteErrorsMessagesBuilder.buildMessage({
                             politeExplanation: "The information required for working with the files relates with pages and shared components " +
                                 "has not been collected for some reason.",
@@ -409,23 +425,7 @@ function removePathSegments(targetPath, targetPathSegments) {
         targetArray: (0, es_extensions_1.explodeURI_PathToSegments)(targetPath),
         predicate: (element) => targetPathSegments.includes(element),
         mutably: true
-    }).updatedArray.join("/");
-}
-/** Upgrade of ImprovedGlob.buildAllFilesInCurrentDirectoryAndBelowGlobSelector */
-function buildAllFilesInCurrentDirectoryAndBelowGlobSelector({ basicDirectoryPath, fileNamePostfixes, fileNamesExtensions }) {
-    return [
-        appendCharacterIfItDoesNotPresentInLastPosition({
-            targetString: (0, es_extensions_1.replaceDoubleBackslashesWithForwardSlashes)(basicDirectoryPath),
-            trailingCharacter: "/"
-        }),
-        "**/*",
-        ...(0, es_extensions_1.isNonEmptyArray)(fileNamePostfixes) ?
-            [`@(${fileNamePostfixes.join("|").replace(/\./gu, "")})`] : [],
-        ...(0, es_extensions_1.isNonEmptyArray)(fileNamesExtensions) ?
-            [es_extensions_nodejs_1.ImprovedGlob.createMultipleFilenameExtensionsGlobPostfix(fileNamesExtensions)] : []
-    ].join("");
-}
-function appendCharacterIfItDoesNotPresentInLastPosition(compoundParameter) {
-    const { targetString, trailingCharacter } = compoundParameter;
-    return targetString.endsWith(trailingCharacter) ? targetString : `${targetString}${trailingCharacter}`;
+    }).
+        updatedArray.
+        join("/");
 }

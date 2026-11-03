@@ -5,7 +5,7 @@
     <PackageId>YamatoDaiwa.PugCSharpStaticPreview</PackageId>
     <Title>Yamato Daiwa Pug-CSharp Static Preview</Title>
     <Description>The class for the generating of the string resources for the Pug static preview basing on CSharp logic</Description>
-    <Version>0.3.1</Version>
+    <Version>0.3.2</Version>
     <RootNamespace>YamatoDaiwa.PugCSharpStaticPreview</RootNamespace>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/TokugawaTakeshi/PugCSharpStaticPreview</RepositoryUrl>
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="YamatoDaiwa.CSharpExtensions" Version="0.6.0" />
+    <PackageReference Include="YamatoDaiwa.CSharpExtensions" Version="0.8.0" />
   </ItemGroup>
 
 </Project>

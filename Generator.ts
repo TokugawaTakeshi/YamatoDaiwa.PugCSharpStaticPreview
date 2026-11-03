@@ -6,12 +6,10 @@ import {
   explodeURI_PathToSegments,
   getMatchingWithFirstRegularExpressionCapturingGroup,
   removeArrayElementsByPredicates,
-  replaceDoubleBackslashesWithForwardSlashes,
   Logger,
   UnexpectedEventError,
   PoliteErrorsMessagesBuilder,
   isNonEmptyString,
-  isNonEmptyArray,
   isNotUndefined,
   isUndefined
 } from "@yamato-daiwa/es-extensions";
@@ -440,7 +438,7 @@ class Generator {
     const targetFilesAbsolutePaths: ReadonlyArray<string> = ImprovedGlob.getFilesAbsolutePathsSynchronously([
       ImprovedGlob.buildAllFilesInCurrentDirectoryAndBelowGlobSelector({
         basicDirectoryPath: targetFilesCommonSourceDirectoryAbsolutePath,
-        fileNamePostfixes: [ "Localization" ],
+        fileNamesPostfixes: [ "Localization" ],
         fileNamesExtensions: [ "cs" ]
       })
     ]);
@@ -717,5 +715,7 @@ function removePathSegments(targetPath: string, targetPathSegments: ReadonlyArra
     targetArray: explodeURI_PathToSegments(targetPath),
     predicate: (element: string): boolean => targetPathSegments.includes(element),
     mutably: true
-  }).updatedArray.join("/");
+  }).
+      updatedArray.
+      join("/");
 }
