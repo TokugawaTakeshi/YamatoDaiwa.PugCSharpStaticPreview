@@ -1,6 +1,6 @@
 {
   "name": "@yamato-daiwa/pug-csharp-static-preview",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The part of the toolkit for the providing of the pug static preview in CSharp hybrid and web applications.",
   "keywords": [
     "build",
@@ -23,7 +23,8 @@
   },
   "files": [
     "Executable.js",
-    "Generator.js"
+    "Generator.js",
+    "Functions.pug"
   ],
   "bin": {
     "yd-pcsp": "./Executable.js"
